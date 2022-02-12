@@ -30,9 +30,8 @@ public class GraphVisualizer extends JPanel {
 
     public GraphVisualizer(UnweightedDirectedGraph graph) {
         this.graph = graph;
-        Random rand = new Random();
         for (int i = 0; i < graph.getNumNodes(); i++) {
-            graph.getVertices().get(i).setXY(i * (50 - rand.nextInt(40)) + offset, i * (50 - rand.nextInt(40)) + offset);
+            resetRandomPos(i);
         }
     }
 
@@ -42,9 +41,8 @@ public class GraphVisualizer extends JPanel {
             optimizeGraphPositions(0.005, 1000000, g);
         }else{
             System.out.println("Done");
-            Random rand = new Random();
             for (int i = 0; i < graph.getNumNodes(); i++) {
-                graph.getVertices().get(i).setXY(i * (50 - rand.nextInt(40)) + offset, i * (50 - rand.nextInt(40)) + offset);
+                resetRandomPos(i);
             }
             iters = 1;
             optimized = false;
@@ -54,7 +52,8 @@ public class GraphVisualizer extends JPanel {
 
     private void resetRandomPos(int i){
         Random rand = new Random();
-        graph.getVertices().get(i).setXY(i * (50 - rand.nextInt(40)) + offset, i * (50 - rand.nextInt(40)) + offset);
+        //The random component will be > 0 so we don't need to worry about the < 0 case.
+        graph.getVertices().get(i).setXY(Math.min(i * (50 - rand.nextInt(40)) + offset, screenWidth), Math.min(i * (50 - rand.nextInt(40)) + offset, screenHeight));
     }
 
     public void drawGraph(Graphics g) {
