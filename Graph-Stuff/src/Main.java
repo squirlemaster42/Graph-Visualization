@@ -12,7 +12,7 @@ public class Main {
 
         JFrame frame = new JFrame("Graph Visualizer");
         frame.add(new GraphVisualizer((g)));
-        frame.setSize(GraphVisualizer.screenWidth, GraphVisualizer.screenHeight);
+        frame.setSize(GraphVisualizer.screenWidth + GraphVisualizer.overscaleWidth, GraphVisualizer.screenHeight + GraphVisualizer.overscaleHeight);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

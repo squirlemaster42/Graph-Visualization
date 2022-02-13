@@ -16,9 +16,11 @@ public class GraphVisualizer extends JPanel {
     public static final double cRep = 10000.0;
     public static final double cSpring = 15.0;
     public static final double kL = 50.0;
-    public static final int screenWidth = 1800;
-    public static final int screenHeight = 1400;
-    public static final int offset = 50;
+    public static final int overscaleWidth = 16;
+    public static final int overscaleHeight = 39;
+    public static final int screenWidth = 2000 - overscaleWidth;
+    public static final int screenHeight = 1400 - overscaleHeight;
+    public static final int offset = 200;
     public static final int circleDiameter = 20;
     public static final int delay = 10;
 
@@ -126,7 +128,8 @@ public class GraphVisualizer extends JPanel {
             Vector f = forceMap.get(n);
 
             Vector cooledF = new Vector(f.getxMag() * coolingFunction(iters), f.getyMag() * coolingFunction(iters));
-            n.setXY(n.getX() + cooledF.getxMag(), n.getY() + cooledF.getyMag());
+            Vector constrainedVector = constrainVector(n.getX(), n.getY(), cooledF);
+            n.setXY(n.getX() + constrainedVector.getxMag(), n.getY() + constrainedVector.getyMag());
         }
 
         iters++;
@@ -176,6 +179,49 @@ public class GraphVisualizer extends JPanel {
         double distance = distance(x2, y2, x1, y1);
         double scalar = cRep / (distance * distance);
         return new Vector(unitVector.getxMag() * scalar, unitVector.getyMag() * scalar);
+    }
+
+    //TODO FIX THIS - probably doesn't work because we have nothing pushing us back after we go off the screen
+    //Takes a vector and ensures that it will not cause a vertex to go off the screen
+    //If it does make us go off the screen we constrain it to the edge
+    public Vector constrainVector(final double x, final double y, final Vector v){
+        boolean out = false;
+        //Check x constraint
+        double constrainedX;
+        double summedX = x + v.getxMag();
+        if(summedX > screenWidth - circleDiameter){ //Right of the screen
+            out = true;
+            if(y > screenWidth - circleDiameter){
+                constrainedX = -(x - (screenWidth - circleDiameter));
+            }else{
+                constrainedX = (screenWidth - circleDiameter) - x;
+            }
+        }else if(summedX < 0){ //Left of the screen
+            constrainedX = -x;
+        }else{
+            constrainedX = v.getxMag();
+        }
+
+        //Check y constraint
+        double constrainedY;
+        double summedY = y + v.getyMag();
+        if(summedY > screenHeight - circleDiameter){ //Bottom of the screen
+            out = true;
+            if(y > screenHeight - circleDiameter){
+                constrainedY = -(y - (screenHeight - circleDiameter));
+            }else{
+                constrainedY = (screenHeight - circleDiameter) - y ;
+            }
+        }else if(summedY < 0){ //Top of the screen
+            constrainedY = -y;
+        }else{
+            constrainedY = v.getyMag();
+        }
+
+//        if(out){
+//            System.out.printf("X: %f - Y: %f - Constrained x: %f - Constrained y: %f\n", x, y, constrainedX, constrainedY);
+//        }
+        return new Vector(constrainedX, constrainedY);
     }
 
     public static class Vector {
