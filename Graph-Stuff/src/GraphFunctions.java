@@ -21,9 +21,9 @@ public class GraphFunctions {
         for (int i = 0; i < equations.size(); i++) {
             for (int j = i + 1; j < equations.size(); j++) {
                 if (equations.get(i).intersects(equations.get(j))) {
-                    System.out.printf("Line between x: %f y: %f and x: %f y: %f intersections line between x: %f y: %f and x: %f y: %f\n",
-                            equations.get(i).x1, equations.get(i).y1,  equations.get(i).x2, equations.get(i).y2,
-                            equations.get(j).x1, equations.get(j).y1,  equations.get(j).x2, equations.get(j).y2);
+                    //System.out.printf("Line between x: %f y: %f and x: %f y: %f intersections line between x: %f y: %f and x: %f y: %f\n",
+                    //        equations.get(i).x1, equations.get(i).y1,  equations.get(i).x2, equations.get(i).y2,
+                    //        equations.get(j).x1, equations.get(j).y1,  equations.get(j).x2, equations.get(j).y2);
                     intersections++;
                 }
             }

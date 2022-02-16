@@ -3,6 +3,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,11 +19,13 @@ public class GraphVisualizer extends JPanel {
     public static final double kL = 50.0;
     public static final int overscaleWidth = 16;
     public static final int overscaleHeight = 39;
-    public static final int screenWidth = 1000 - overscaleWidth;
-    public static final int screenHeight = 800 - overscaleHeight;
+    public static final int screenWidth = 1800 - overscaleWidth;
+    public static final int screenHeight = 1300 - overscaleHeight;
     public static final int offset = 200;
     public static final int circleDiameter = 20;
     public static final int delay = 10;
+
+    private final FileManager fileManager;
 
     private final UnweightedDirectedGraph graph;
 
@@ -30,23 +33,47 @@ public class GraphVisualizer extends JPanel {
 
     private int iters = 1;
 
+    private int numRuns = 0;
+
     public GraphVisualizer(UnweightedDirectedGraph graph) {
         this.graph = graph;
+
+        try {
+            fileManager = new FileManager("nodeDataDump.txt");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        fileManager.writeMessage(numRuns + " - ");
+        fileManager.writeMessage("{");
         for (int i = 0; i < graph.getNumNodes(); i++) {
             resetRandomPos(i);
+            if(i != graph.getNumNodes() - 1){
+                fileManager.writeMessage(",");
+            }
         }
+        fileManager.writeMessage("}");
     }
 
     public void paintComponent(Graphics g) {
         drawGraph(g);
         if (!optimized) {
-            optimizeGraphPositions(0.005, 1000000, g);
+            optimizeGraphPositions(0.005, 100000, g);
         }else{
             int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
-            System.out.println("Done: " + intersections);
+            System.out.println(numRuns + " - Done: " + intersections);
+            fileManager.writeMessage(" - " + intersections + "\n");
+
+            numRuns++;
+            fileManager.writeMessage(numRuns + " - ");
+            fileManager.writeMessage("{");
             for (int i = 0; i < graph.getNumNodes(); i++) {
                 resetRandomPos(i);
+                if(i != graph.getNumNodes() - 1){
+                    fileManager.writeMessage(",");
+                }
             }
+            fileManager.writeMessage("}");
             iters = 1;
             optimized = false;
             maxForceChange = Integer.MAX_VALUE;
@@ -56,7 +83,10 @@ public class GraphVisualizer extends JPanel {
     private void resetRandomPos(int i){
         Random rand = new Random();
         //The random component will be > 0 so we don't need to worry about the < 0 case.
-        graph.getVertices().get(i).setXY(Math.min(i * (50 - rand.nextInt(40)) + offset, screenWidth), Math.min(i * (50 - rand.nextInt(40)) + offset, screenHeight));
+        double xPos = Math.min(i * (50 - rand.nextInt(40)) + offset, screenWidth);
+        double yPos = Math.min(i * (50 - rand.nextInt(40)) + offset, screenHeight);
+        graph.getVertices().get(i).setXY(xPos, yPos);
+        fileManager.writeMessage(String.format("{%f,%f}", xPos, yPos));
     }
 
     public void drawGraph(Graphics g) {
@@ -142,11 +172,11 @@ public class GraphVisualizer extends JPanel {
         }
         maxForceChange = max;
         drawGraph(g);
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Thread.sleep(delay);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     private Vector attractiveForce(double x1, double y1, double x2, double y2, final double l) {
