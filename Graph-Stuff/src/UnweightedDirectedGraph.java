@@ -4,12 +4,12 @@ public class UnweightedDirectedGraph {
 
     //TODO Refactor to something with O(1) lookup
     private final List<Node> vertex;
-    private final Set<String> edges;
+    private final List<String> edges;
     private int numNodes = 0;
 
     public UnweightedDirectedGraph() {
         this.vertex = new ArrayList<>();
-        this.edges = new HashSet<>();
+        this.edges = new ArrayList<>();
     }
 
     public void addVertex(final Node n) {
@@ -40,7 +40,7 @@ public class UnweightedDirectedGraph {
         edges.add(start.name + "," + end.name);
     }
 
-    public Set<String> getEdges(){
+    public List<String> getEdges(){
         return edges;
     }
 

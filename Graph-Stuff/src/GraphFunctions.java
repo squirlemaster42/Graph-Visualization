@@ -3,23 +3,23 @@ import java.util.List;
 
 public class GraphFunctions {
 
-    public static int computeNumEdgeIntersections(UnweightedDirectedGraph g){
+    public static int computeNumEdgeIntersections(UnweightedDirectedGraph g) {
         final List<LineSegment> equations = new ArrayList<>();
-        for(String s : g.getEdges()){
-           String[] splitS = s.split(",");
-           UnweightedDirectedGraph.Node n1 = g.getVertex(splitS[0]);
-           UnweightedDirectedGraph.Node n2 = g.getVertex(splitS[1]);
-           double x1 = n1.getX();
-           double y1 = n1.getY();
-           double x2 = n2.getX();
-           double y2 = n2.getY();
-           equations.add(new LineSegment(x1, y1, x2, y2));
+        for (String s : g.getEdges()) {
+            String[] splitS = s.split(",");
+            UnweightedDirectedGraph.Node n1 = g.getVertex(splitS[0]);
+            UnweightedDirectedGraph.Node n2 = g.getVertex(splitS[1]);
+            double x1 = n1.getX();
+            double y1 = n1.getY();
+            double x2 = n2.getX();
+            double y2 = n2.getY();
+            equations.add(new LineSegment(x1, y1, x2, y2));
         }
 
         int intersections = 0;
-        for(int i = 0; i < equations.size(); i++){
-            for(int j = i + 1; j < equations.size(); j++){
-                if(equations.get(i).intersects(equations.get(j))){
+        for (int i = 0; i < equations.size(); i++) {
+            for (int j = i + 1; j < equations.size(); j++) {
+                if (equations.get(i).intersects(equations.get(j))) {
                     intersections++;
                 }
             }
@@ -29,13 +29,13 @@ public class GraphFunctions {
     }
 
     private static double distance(double x1, double y1, double x2, double y2) {
-        double xDist = Math.abs(x2-x1);
-        double yDist = Math.abs(y2-y1);
+        double xDist = x2 - x1;
+        double yDist = y2 - y1;
         return Math.sqrt((xDist) * (xDist) + (yDist) * (yDist));
     }
 
     //(y1-y2)x+(x2-x1)y=x2y1-x1y2
-    public static class LineSegment{
+    public static class LineSegment {
         private final double x1, y1, x2, y2;
         private final double A, B, C;
 
@@ -53,12 +53,18 @@ public class GraphFunctions {
             C = -b;
         }
 
-        public boolean intersects(LineSegment l){
-            double xIntersect = (C - l.C) / (A - l.A);
-            double yIntersect = -(C/(A * xIntersect));
-            boolean firstEndpoints = distance(xIntersect, yIntersect, x1, y1) + distance(xIntersect, yIntersect, x2, y2) <= distance(x1, y1, x2, y2);
-            boolean secondEndpoints = distance(xIntersect, yIntersect, l.x1, l.y1) + distance(xIntersect, yIntersect, l.x2, l.y2) <= distance(l.x1, l.y1, l.x2, l.y2);
-            return firstEndpoints && secondEndpoints;
+       public boolean ccw(double x1, double y1, double x2, double y2, double x3, double y3){
+            return (y3 - y1) * (x2 - x1) > (y2-y1) * (y3-y1);
+       }
+
+        public boolean intersects(LineSegment l) {
+//            double xIntersect = (C - l.C) / (A - l.A);
+//            double yIntersect = -(C / (A * xIntersect));
+//            boolean firstEndpoints = distance(xIntersect, yIntersect, x1, y1) + distance(xIntersect, yIntersect, x2, y2) <= distance(x1, y1, x2, y2);
+//            boolean secondEndpoints = distance(xIntersect, yIntersect, l.x1, l.y1) + distance(xIntersect, yIntersect, l.x2, l.y2) <= distance(l.x1, l.y1, l.x2, l.y2);
+//            return firstEndpoints && secondEndpoints;
+
+            return ccw(x1, y1, l.x1, l.y1, l.x2, l.y2) != ccw(x2, y2, l.x1, l.y1, l.x2, l.y2) && ccw(x1, y1, x2, y2, l.x1, l.y1) != ccw(x1, y1, x2, y2, l.x2, l.y2);
         }
 
         public double getX1() {
