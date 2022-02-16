@@ -42,7 +42,8 @@ public class GraphVisualizer extends JPanel {
         if (!optimized) {
             optimizeGraphPositions(0.005, 1000000, g);
         }else{
-            System.out.println("Done: " + GraphFunctions.computeNumEdgeIntersections(graph));
+            int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
+            System.out.println("Done: " + intersections);
             for (int i = 0; i < graph.getNumNodes(); i++) {
                 resetRandomPos(i);
             }
