@@ -1,14 +1,15 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class UnweightedDirectedGraph {
 
+    //TODO Refactor to something with O(1) lookup
     private final List<Node> vertex;
+    private final Set<String> edges;
     private int numNodes = 0;
 
-    public UnweightedDirectedGraph(){
+    public UnweightedDirectedGraph() {
         this.vertex = new ArrayList<>();
+        this.edges = new HashSet<>();
     }
 
     public void addVertex(final Node n) {
@@ -36,6 +37,11 @@ public class UnweightedDirectedGraph {
     public void addEdge(final Node start, final Node end){
         start.addEdge(end);
         end.addEdge(start);
+        edges.add(start.name + "," + end.name);
+    }
+
+    public Set<String> getEdges(){
+        return edges;
     }
 
     public static class Node{
