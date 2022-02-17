@@ -39,7 +39,7 @@ public class GraphVisualizer extends JPanel {
         this.graph = graph;
 
         try {
-            fileManager = new FileManager("nodeDataDump2.txt");
+            fileManager = new FileManager("nodeDataDump3.txt");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -83,8 +83,8 @@ public class GraphVisualizer extends JPanel {
     private void resetRandomPos(int i){
         Random rand = new Random();
         //The random component will be > 0 so we don't need to worry about the < 0 case.
-        double xPos = Math.min(i * (50 - rand.nextInt(40)) + offset, screenWidth);
-        double yPos = Math.min(i * (50 - rand.nextInt(40)) + offset, screenHeight);
+        double xPos = Math.min(rand.nextInt(screenWidth), screenWidth);
+        double yPos = Math.min(rand.nextInt(screenHeight), screenHeight);
         graph.getVertices().get(i).setXY(xPos, yPos);
         fileManager.writeMessage(String.format("{%f,%f}", xPos, yPos));
     }
