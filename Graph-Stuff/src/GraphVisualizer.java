@@ -39,7 +39,7 @@ public class GraphVisualizer extends JPanel {
         this.graph = graph;
 
         try {
-            fileManager = new FileManager("nodeDataDump.txt");
+            fileManager = new FileManager("nodeDataDump2.txt");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
