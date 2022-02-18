@@ -31,12 +31,6 @@ public class GraphFunctions {
         return intersections;
     }
 
-    private static double distance(double x1, double y1, double x2, double y2) {
-        double xDist = x2 - x1;
-        double yDist = y2 - y1;
-        return Math.sqrt((xDist) * (xDist) + (yDist) * (yDist));
-    }
-
     //(y1-y2)x+(x2-x1)y=x2y1-x1y2
     public static class LineSegment {
         private final double x1, y1, x2, y2;
@@ -109,22 +103,6 @@ public class GraphFunctions {
             // p2, q2 and q1 are collinear and q1 lies on segment p2q2
             return o4 == 0 && onSegment(p2, q1, q2);// Doesn't fall in any of the above cases
         }
-
-        public double getX1() {
-            return x1;
-        }
-
-        public double getY1() {
-            return y1;
-        }
-
-        public double getX2() {
-            return x2;
-        }
-
-        public double getY2() {
-            return y2;
-        }
     }
 
     public static class Point{
@@ -133,14 +111,6 @@ public class GraphFunctions {
         public Point(final double x, final double y){
             this.x = x;
             this.y = y;
-        }
-
-        public double getX() {
-            return x;
-        }
-
-        public double getY() {
-            return y;
         }
     }
 }
