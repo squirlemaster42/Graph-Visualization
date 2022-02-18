@@ -19,8 +19,8 @@ public class GraphVisualizer extends JPanel {
     public static final double kL = 50.0;
     public static final int overscaleWidth = 16;
     public static final int overscaleHeight = 39;
-    public static final int screenWidth = 1800 - overscaleWidth;
-    public static final int screenHeight = 1300 - overscaleHeight;
+    public static final int screenWidth = 1600 - overscaleWidth;
+    public static final int screenHeight = 1000 - overscaleHeight;
     public static final int offset = 200;
     public static final int circleDiameter = 20;
     public static final int delay = 10;
