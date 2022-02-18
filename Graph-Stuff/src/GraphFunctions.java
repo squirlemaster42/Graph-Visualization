@@ -16,7 +16,6 @@ public class GraphFunctions {
             equations.add(new LineSegment(x1, y1, x2, y2));
         }
 
-        //Does not work because it is finding intersections on edges that share a vertex
         int intersections = 0;
         for (int i = 0; i < equations.size(); i++) {
             for (int j = i + 1; j < equations.size(); j++) {

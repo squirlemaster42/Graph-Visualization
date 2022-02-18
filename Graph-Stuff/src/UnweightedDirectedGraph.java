@@ -2,18 +2,17 @@ import java.util.*;
 
 public class UnweightedDirectedGraph {
 
-    //TODO Refactor to something with O(1) lookup
-    private final List<Node> vertex;
+    private final Map<String, Node> vertex;
     private final List<String> edges;
     private int numNodes = 0;
 
     public UnweightedDirectedGraph() {
-        this.vertex = new ArrayList<>();
+        this.vertex = new HashMap<>();
         this.edges = new ArrayList<>();
     }
 
     public void addVertex(final Node n) {
-        vertex.add(n);
+        vertex.put(n.name, n);
         numNodes++;
     }
 
@@ -22,15 +21,10 @@ public class UnweightedDirectedGraph {
     }
 
     public Node getVertex(String name){
-        for (Node n: vertex) {
-            if(n.getName().equals(name)){
-                return n;
-            }
-        }
-        return null;
+        return vertex.get(name);
     }
 
-    public List<Node> getVertices(){
+    public Map<String, Node> getVertices(){
         return vertex;
     }
 

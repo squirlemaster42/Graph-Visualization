@@ -21,7 +21,6 @@ public class GraphVisualizer extends JPanel {
     public static final int overscaleHeight = 39;
     public static final int screenWidth = 1600 - overscaleWidth;
     public static final int screenHeight = 1000 - overscaleHeight;
-    public static final int offset = 200;
     public static final int circleDiameter = 20;
     public static final int delay = 10;
 
@@ -46,8 +45,10 @@ public class GraphVisualizer extends JPanel {
 
         fileManager.writeMessage(numRuns + " - ");
         fileManager.writeMessage("{");
-        for (int i = 0; i < graph.getNumNodes(); i++) {
-            resetRandomPos(i);
+        int i = 0;
+        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
+            resetRandomPos(entry.getKey());
+            i++;
             if(i != graph.getNumNodes() - 1){
                 fileManager.writeMessage(",");
             }
@@ -67,8 +68,10 @@ public class GraphVisualizer extends JPanel {
             numRuns++;
             fileManager.writeMessage(numRuns + " - ");
             fileManager.writeMessage("{");
-            for (int i = 0; i < graph.getNumNodes(); i++) {
-                resetRandomPos(i);
+            int i = 0;
+            for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()){
+                resetRandomPos(entry.getKey());
+                i++;
                 if(i != graph.getNumNodes() - 1){
                     fileManager.writeMessage(",");
                 }
@@ -80,7 +83,7 @@ public class GraphVisualizer extends JPanel {
         }
     }
 
-    private void resetRandomPos(int i){
+    private void resetRandomPos(String i){
         Random rand = new Random();
         //The random component will be > 0 so we don't need to worry about the < 0 case.
         double xPos = Math.min(rand.nextInt(screenWidth), screenWidth);
@@ -95,13 +98,15 @@ public class GraphVisualizer extends JPanel {
         g.fillRect(0, 0, screenWidth, screenHeight);
 
         g.setColor(Color.LIGHT_GRAY);
-        for (int i = 0; i < graph.getNumNodes(); i++) {
+        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
+            String i = entry.getKey();
             g.fillOval((int) graph.getVertices().get(i).getX() - 10, (int) graph.getVertices().get(i).getY() - 10, circleDiameter, circleDiameter);
         }
 
         ((Graphics2D) g).setStroke(new BasicStroke(2));
 
-        for (UnweightedDirectedGraph.Node n1 : graph.getVertices()) {
+        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
+            UnweightedDirectedGraph.Node n1 = entry.getValue();
             for (UnweightedDirectedGraph.Node n2 : n1.getEdges()) {
                 g.drawLine((int) n1.getX(), (int) n1.getY(), (int) n2.getX(), (int) n2.getY());
             }
@@ -117,8 +122,8 @@ public class GraphVisualizer extends JPanel {
     private double maxForceChange = Integer.MAX_VALUE;
     public void optimizeGraphPositions(final double epsilon, final int maxIter, final Graphics g) {
         Map<UnweightedDirectedGraph.Node, Vector> forceMap = new HashMap<>();
-        for (UnweightedDirectedGraph.Node n : graph.getVertices()) {
-            forceMap.put(n, new Vector(0, 0));
+        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
+            forceMap.put(entry.getValue(), new Vector(0, 0));
         }
 
         if (iters > maxIter || maxForceChange < epsilon) {
@@ -126,17 +131,19 @@ public class GraphVisualizer extends JPanel {
             return;
         }
 
-        for (UnweightedDirectedGraph.Node n : graph.getVertices()) {
+        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
+            UnweightedDirectedGraph.Node n = entry.getValue();
             List<Vector> repList = new ArrayList<>();
             List<Vector> springList = new ArrayList<>();
 
             Set<UnweightedDirectedGraph.Node> adj = new HashSet<>();
             for (UnweightedDirectedGraph.Node e : n.getEdges()) {
-                springList.add(attractiveForce(n.getX(), n.getY(), e.getX(), e.getY(), kL));
+                springList.add(attractiveForce(n.getX(), n.getY(), e.getX(), e.getY()));
                 adj.add(e);
             }
 
-            for(UnweightedDirectedGraph.Node u : graph.getVertices()){
+            for(Map.Entry<String, UnweightedDirectedGraph.Node> entry1 : graph.getVertices().entrySet()){
+                UnweightedDirectedGraph.Node u = entry1.getValue();
                 if(!u.equals(n) && !adj.contains(u)){
                     repList.add(repulsiveForce(n.getX(), n.getY(), u.getX(), u.getY()));
                 }
@@ -155,7 +162,8 @@ public class GraphVisualizer extends JPanel {
             forceMap.put(n, new Vector(sumRep.getxMag() + sumSpring.getxMag(), sumRep.getyMag() + sumSpring.getyMag()));
         }
 
-        for (UnweightedDirectedGraph.Node n : graph.getVertices()) {
+        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
+            UnweightedDirectedGraph.Node n = entry.getValue();
             Vector f = forceMap.get(n);
 
             Vector cooledF = new Vector(f.getxMag() * coolingFunction(iters), f.getyMag() * coolingFunction(iters));
@@ -179,9 +187,9 @@ public class GraphVisualizer extends JPanel {
 //        }
     }
 
-    private Vector attractiveForce(double x1, double y1, double x2, double y2, final double l) {
+    private Vector attractiveForce(double x1, double y1, double x2, double y2) {
         double distance = distance(x1, y1, x2, y2);
-        double scalar = cSpring * Math.log(distance / l);
+        double scalar = cSpring * Math.log(distance / GraphVisualizer.kL);
         Vector unitVector = getUnitVector(x1, y1, x2, y2);
         return new Vector(unitVector.getxMag() * scalar, unitVector.getyMag() * scalar);
     }
@@ -212,16 +220,13 @@ public class GraphVisualizer extends JPanel {
         return new Vector(unitVector.getxMag() * scalar, unitVector.getyMag() * scalar);
     }
 
-    //TODO FIX THIS - probably doesn't work because we have nothing pushing us back after we go off the screen
     //Takes a vector and ensures that it will not cause a vertex to go off the screen
     //If it does make us go off the screen we constrain it to the edge
     public Vector constrainVector(final double x, final double y, final Vector v){
-        boolean out = false;
         //Check x constraint
         double constrainedX;
         double summedX = x + v.getxMag();
         if(summedX > screenWidth - circleDiameter){ //Right of the screen
-            out = true;
             if(y > screenWidth - circleDiameter){
                 constrainedX = -(x - (screenWidth - circleDiameter));
             }else{
@@ -237,7 +242,6 @@ public class GraphVisualizer extends JPanel {
         double constrainedY;
         double summedY = y + v.getyMag();
         if(summedY > screenHeight - circleDiameter){ //Bottom of the screen
-            out = true;
             if(y > screenHeight - circleDiameter){
                 constrainedY = -(y - (screenHeight - circleDiameter));
             }else{
