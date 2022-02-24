@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+//TODO make extend square matrix
 public class AdjMat {
 
     public static AdjMat makeMatrixFromFile(final String filePath){
