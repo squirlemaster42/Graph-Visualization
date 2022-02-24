@@ -1,10 +1,11 @@
-public class DegMatrix extends SquareMatrix{
+public class DegMatrix{
 
     private final AdjMat adjMat;
+    private final int[][] matrix;
 
     public DegMatrix(final AdjMat adjMat) {
-        super(adjMat.getNumVertices());
         this.adjMat = adjMat;
+        matrix = new int[adjMat.getNumVertices()][adjMat.getNumVertices()];
         buildMatrix();
 
         for (int[] ints : matrix) {
@@ -15,8 +16,7 @@ public class DegMatrix extends SquareMatrix{
         }
     }
 
-    @Override
-    public void buildMatrix() {
+    private void buildMatrix() {
         for(int i = 0; i < adjMat.getNumVertices(); i++){
             int degree = 0;
             for(int j = 0; j < adjMat.getNumVertices(); j++){
@@ -26,5 +26,9 @@ public class DegMatrix extends SquareMatrix{
             }
             matrix[i][i] = degree;
         }
+    }
+
+    public int get(int i, int j){
+        return matrix[i][j];
     }
 }

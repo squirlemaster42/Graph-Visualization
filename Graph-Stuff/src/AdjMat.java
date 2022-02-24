@@ -74,6 +74,10 @@ public class AdjMat {
         return adjMat[i][j] == 1;
     }
 
+    public int get(int i, int j){
+        return adjMat[i][j];
+    }
+
     public UnweightedDirectedGraph makeGraph(){
         UnweightedDirectedGraph graph = new UnweightedDirectedGraph();
         for(int i = 0; i < adjMat.length; i++){
