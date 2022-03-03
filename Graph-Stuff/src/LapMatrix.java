@@ -5,6 +5,6 @@ public class LapMatrix {
     private final RealMatrix laplacianMatrix;
 
     public LapMatrix(final AdjMat adjMat, final DegMatrix degMatrix){
-        laplacianMatrix = degMatrix.getrMatrix().subtract(adjMat.getrMatrix());
+        laplacianMatrix = degMatrix.getMatrix().subtract(adjMat.getMatrix());
     }
 }

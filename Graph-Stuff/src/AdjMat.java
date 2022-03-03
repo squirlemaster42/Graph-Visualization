@@ -54,49 +54,40 @@ public class AdjMat {
         return returnMatrix;
     }
 
-    private final int[][] adjMat;
-    private final RealMatrix rMatrix;
+    private final RealMatrix matrix;
 
     public AdjMat(int n){
-        adjMat = new int[n][n];
+        matrix = new Array2DRowRealMatrix(n, n);
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
-                adjMat[i][j] = 0;
+                matrix.setEntry(i, j, 0);
             }
         }
-
-        double[][] doubles = new double[n][n];
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n; j++){
-                doubles[i][j] = adjMat[i][j];
-            }
-        }
-        rMatrix = new Array2DRowRealMatrix(doubles);
     }
 
     private void setEdge(int i, int j){
-        adjMat[i][j] = 1;
-        rMatrix.setEntry(i, j, 1);
+        matrix.setEntry(i, j, 1);
     }
 
     public int getNumVertices(){
-        return adjMat.length;
+        //Our matrix is square so matrix.getColumnDimension() = matrix.getRowDimension()
+        return matrix.getColumnDimension();
     }
 
     public boolean isEdge(int i, int j){
-        return adjMat[i][j] == 1;
+        return matrix.getEntry(i, j) == 1;
     }
 
     public int get(int i, int j){
-        return adjMat[i][j];
+        return (int) matrix.getEntry(i, j);
     }
 
     public UnweightedDirectedGraph makeGraph(){
         UnweightedDirectedGraph graph = new UnweightedDirectedGraph();
-        for(int i = 0; i < adjMat.length; i++){
+        for(int i = 0; i < getNumVertices(); i++){
             graph.addVertex(new UnweightedDirectedGraph.Node(i + ""));
         }
-        for(int i = 1; i < adjMat.length; i++){
+        for(int i = 1; i < getNumVertices(); i++){
             for(int j = 0; j < i; j++){
                 if(isEdge(i, j)){
                     graph.addEdge(graph.getVertex(i + ""), graph.getVertex(j + ""));
@@ -111,9 +102,9 @@ public class AdjMat {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        for (int[] ints : adjMat) {
-            for (int j = 0; j < adjMat.length; j++) {
-                builder.append(" ").append(ints[j]).append(" ");
+        for (int i = 0; i < getNumVertices(); i++) {
+            for (int j = 0; j < getNumVertices(); j++) {
+                builder.append(" ").append(matrix.getEntry(i, j)).append(" ");
             }
             builder.append("\n");
         }
@@ -121,7 +112,7 @@ public class AdjMat {
         return builder.toString();
     }
 
-    public RealMatrix getrMatrix() {
-        return rMatrix;
+    public RealMatrix getMatrix() {
+        return matrix;
     }
 }
