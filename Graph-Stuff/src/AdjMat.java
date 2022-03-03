@@ -1,3 +1,6 @@
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -52,6 +55,7 @@ public class AdjMat {
     }
 
     private final int[][] adjMat;
+    private final RealMatrix rMatrix;
 
     public AdjMat(int n){
         adjMat = new int[n][n];
@@ -60,10 +64,19 @@ public class AdjMat {
                 adjMat[i][j] = 0;
             }
         }
+
+        double[][] doubles = new double[n][n];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                doubles[i][j] = adjMat[i][j];
+            }
+        }
+        rMatrix = new Array2DRowRealMatrix(doubles);
     }
 
     private void setEdge(int i, int j){
         adjMat[i][j] = 1;
+        rMatrix.setEntry(i, j, 1);
     }
 
     public int getNumVertices(){
@@ -106,5 +119,9 @@ public class AdjMat {
         }
 
         return builder.toString();
+    }
+
+    public RealMatrix getrMatrix() {
+        return rMatrix;
     }
 }

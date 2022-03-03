@@ -1,22 +1,23 @@
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+
 public class DegMatrix{
 
-    private final AdjMat adjMat;
-    private final int[][] matrix;
+    private final RealMatrix rMatrix;
 
     public DegMatrix(final AdjMat adjMat) {
-        this.adjMat = adjMat;
-        matrix = new int[adjMat.getNumVertices()][adjMat.getNumVertices()];
-        buildMatrix();
+        rMatrix = new Array2DRowRealMatrix(adjMat.getNumVertices(), adjMat.getNumVertices());
+        buildMatrix(adjMat);
 
-        for (int[] ints : matrix) {
-            for (int j = 0; j < matrix.length; j++) {
-                System.out.print(ints[j] + " ");
+        for (int i = 0; i < adjMat.getNumVertices(); i++) {
+            for (int j = 0; j < adjMat.getNumVertices(); j++) {
+                System.out.print(rMatrix.getEntry(i, j) + " ");
             }
             System.out.println();
         }
     }
 
-    private void buildMatrix() {
+    private void buildMatrix(AdjMat adjMat) {
         for(int i = 0; i < adjMat.getNumVertices(); i++){
             int degree = 0;
             for(int j = 0; j < adjMat.getNumVertices(); j++){
@@ -24,11 +25,11 @@ public class DegMatrix{
                     degree++;
                 }
             }
-            matrix[i][i] = degree;
+            rMatrix.setEntry(i, i, degree);
         }
     }
 
-    public int get(int i, int j){
-        return matrix[i][j];
+    public RealMatrix getrMatrix(){
+        return rMatrix;
     }
 }

@@ -7,7 +7,7 @@ public class Main {
         //RandomMatrixStringGenerator.MatrixBuilderPair randMatrix = RandomMatrixStringGenerator.generateRandomMatrixString();
         //AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(randMatrix.matrix, randMatrix.size);
 
-        AdjMat adjMat = AdjMat.makeMatrixFromFile("adjMat2.txt");
+        AdjMat adjMat = AdjMat.makeMatrixFromFile("adjMat.txt");
         UnweightedDirectedGraph g = adjMat.makeGraph();
 
         JFrame frame = new JFrame("Graph Visualizer");
