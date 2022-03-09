@@ -9,12 +9,12 @@ public class DegMatrix{
         matrix = new Array2DRowRealMatrix(adjMat.getNumVertices(), adjMat.getNumVertices());
         buildMatrix(adjMat);
 
-        for (int i = 0; i < adjMat.getNumVertices(); i++) {
-            for (int j = 0; j < adjMat.getNumVertices(); j++) {
-                System.out.print(matrix.getEntry(i, j) + " ");
-            }
-            System.out.println();
-        }
+//        for (int i = 0; i < adjMat.getNumVertices(); i++) {
+//            for (int j = 0; j < adjMat.getNumVertices(); j++) {
+//                System.out.print(matrix.getEntry(i, j) + " ");
+//            }
+//            System.out.println();
+//        }
     }
 
     private void buildMatrix(AdjMat adjMat) {

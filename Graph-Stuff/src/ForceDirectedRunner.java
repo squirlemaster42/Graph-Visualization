@@ -1,118 +1,32 @@
-import javax.swing.JPanel;
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
-public class GraphVisualizer extends JPanel {
+public class ForceDirectedRunner {
 
-    public static final double cRep = 10000.0;
-    public static final double cSpring = 15.0;
-    public static final double kL = 50.0;
-    public static final int overscaleWidth = 16;
-    public static final int overscaleHeight = 39;
-    public static final int screenWidth = 1000 - overscaleWidth;
-    public static final int screenHeight = 800 - overscaleHeight;
-    public static final int circleDiameter = 20;
-    public static final int delay = 10;
-
-    private final FileManager fileManager;
+    private final double cRep;
+    private final double cSpring;
+    private final double kL;
+    private final int screenWidth;
+    private final int screenHeight;
+    private final int circleDiameter;
 
     private final UnweightedDirectedGraph graph;
-
+    private int iters = 0;
     private boolean optimized = false;
 
-    private int iters = 1;
-
-    private int numRuns = 0;
-
-    public GraphVisualizer(UnweightedDirectedGraph graph) {
+    public ForceDirectedRunner(final UnweightedDirectedGraph graph, final double cRep, final double cSpring, final double kL, final int screenWidth, final int screenHeight, final int circleDiameter){
         this.graph = graph;
-
-        try {
-            fileManager = new FileManager("nodeDataDump3.txt");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        fileManager.writeMessage(numRuns + " - ");
-        fileManager.writeMessage("{");
-        int i = 0;
-        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
-            resetRandomPos(entry.getKey());
-            i++;
-            if(i != graph.getNumNodes() - 1){
-                fileManager.writeMessage(",");
-            }
-        }
-        fileManager.writeMessage("}");
-    }
-
-    public void paintComponent(Graphics g) {
-        drawGraph(g);
-        if (!optimized) {
-            optimizeGraphPositions(0.005, 100000, g);
-        }else{
-            int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
-            System.out.println(numRuns + " - Done: " + intersections);
-            fileManager.writeMessage(" - " + intersections + "\n");
-
-            numRuns++;
-            fileManager.writeMessage(numRuns + " - ");
-            fileManager.writeMessage("{");
-            int i = 0;
-            for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()){
-                resetRandomPos(entry.getKey());
-                i++;
-                if(i != graph.getNumNodes() - 1){
-                    fileManager.writeMessage(",");
-                }
-            }
-            fileManager.writeMessage("}");
-            iters = 1;
-            optimized = false;
-            maxForceChange = Integer.MAX_VALUE;
-        }
-    }
-
-    private void resetRandomPos(String i){
-        Random rand = new Random();
-        //The random component will be > 0 so we don't need to worry about the < 0 case.
-        double xPos = Math.min(rand.nextInt(screenWidth), screenWidth);
-        double yPos = Math.min(rand.nextInt(screenHeight), screenHeight);
-        graph.getVertices().get(i).setXY(xPos, yPos);
-        fileManager.writeMessage(String.format("{%f,%f}", xPos, yPos));
-    }
-
-    public void drawGraph(Graphics g) {
-        ((Graphics2D) g).setStroke(new BasicStroke(4));
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(0, 0, screenWidth, screenHeight);
-
-        g.setColor(Color.LIGHT_GRAY);
-        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
-            String i = entry.getKey();
-            g.fillOval((int) graph.getVertices().get(i).getX() - 10, (int) graph.getVertices().get(i).getY() - 10, circleDiameter, circleDiameter);
-        }
-
-        ((Graphics2D) g).setStroke(new BasicStroke(2));
-
-        for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
-            UnweightedDirectedGraph.Node n1 = entry.getValue();
-            for (UnweightedDirectedGraph.Node n2 : n1.getEdges()) {
-                g.drawLine((int) n1.getX(), (int) n1.getY(), (int) n2.getX(), (int) n2.getY());
-            }
-        }
-        super.repaint();
-        super.revalidate();
+        this.cRep = cRep;
+        this.cSpring = cSpring;
+        this.kL = kL;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        this.circleDiameter = circleDiameter;
     }
 
     public double coolingFunction(double t) {
@@ -133,7 +47,7 @@ public class GraphVisualizer extends JPanel {
 
         for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
             UnweightedDirectedGraph.Node n = entry.getValue();
-            List<Vector> repList = new ArrayList<>();
+            java.util.List<Vector> repList = new ArrayList<>();
             List<Vector> springList = new ArrayList<>();
 
             Set<UnweightedDirectedGraph.Node> adj = new HashSet<>();
@@ -179,7 +93,6 @@ public class GraphVisualizer extends JPanel {
             }
         }
         maxForceChange = max;
-        drawGraph(g);
 //        try {
 //            Thread.sleep(delay);
 //        } catch (InterruptedException e) {
@@ -189,7 +102,7 @@ public class GraphVisualizer extends JPanel {
 
     private Vector attractiveForce(double x1, double y1, double x2, double y2) {
         double distance = distance(x1, y1, x2, y2);
-        double scalar = cSpring * Math.log(distance / GraphVisualizer.kL);
+        double scalar = cSpring * Math.log(distance / kL);
         Vector unitVector = getUnitVector(x1, y1, x2, y2);
         return new Vector(unitVector.getxMag() * scalar, unitVector.getyMag() * scalar);
     }
@@ -259,4 +172,7 @@ public class GraphVisualizer extends JPanel {
         return new Vector(constrainedX, constrainedY);
     }
 
+    public boolean isOptimized() {
+        return optimized;
+    }
 }
