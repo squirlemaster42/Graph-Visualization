@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ForceDirectedRunner {
+public class ForceDirectedRunner extends GraphVisualizationRunner{
 
     private final double cRep;
     private final double cSpring;
@@ -20,6 +20,7 @@ public class ForceDirectedRunner {
     private boolean optimized = false;
 
     public ForceDirectedRunner(final UnweightedDirectedGraph graph, final double cRep, final double cSpring, final double kL, final int screenWidth, final int screenHeight, final int circleDiameter){
+        super(graph);
         this.graph = graph;
         this.cRep = cRep;
         this.cSpring = cSpring;
@@ -34,7 +35,9 @@ public class ForceDirectedRunner {
     }
 
     private double maxForceChange = Integer.MAX_VALUE;
-    public void optimizeGraphPositions(final double epsilon, final int maxIter, final Graphics g) {
+
+    @Override
+    public void optimizeGraphPositions(final double epsilon, final int maxIter) {
         Map<UnweightedDirectedGraph.Node, Vector> forceMap = new HashMap<>();
         for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()) {
             forceMap.put(entry.getValue(), new Vector(0, 0));

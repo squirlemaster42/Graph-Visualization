@@ -21,7 +21,7 @@ public class GraphVisualizer extends JPanel {
     private final FileManager fileManager;
     private final UnweightedDirectedGraph graph;
     private int numRuns = 0;
-    private ForceDirectedRunner forceDirectedRunner;
+    private GraphVisualizationRunner forceDirectedRunner;
 
     public GraphVisualizer(UnweightedDirectedGraph graph) {
         this.graph = graph;
@@ -49,7 +49,7 @@ public class GraphVisualizer extends JPanel {
     public void paintComponent(Graphics g) {
         drawGraph(g);
         if (!forceDirectedRunner.isOptimized()) {
-            forceDirectedRunner.optimizeGraphPositions(0.005, 100000, g);
+            forceDirectedRunner.optimizeGraphPositions(0.005, 100000);
         }else{
             int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
             System.out.println(numRuns + " - Done: " + intersections);
