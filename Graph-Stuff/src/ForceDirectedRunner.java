@@ -16,7 +16,7 @@ public class ForceDirectedRunner {
     private final int circleDiameter;
 
     private final UnweightedDirectedGraph graph;
-    private int iters = 0;
+    private int iters = 1;
     private boolean optimized = false;
 
     public ForceDirectedRunner(final UnweightedDirectedGraph graph, final double cRep, final double cSpring, final double kL, final int screenWidth, final int screenHeight, final int circleDiameter){
