@@ -1,4 +1,6 @@
-import javax.swing.JFrame;
+import java.io.FileNotFoundException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
 
@@ -18,11 +20,27 @@ public class Main {
 
         AdjMat adjMat = AdjMat.makeMatrixFromFile("adjMat.txt");
         UnweightedDirectedGraph g = adjMat.makeGraph();
-
-        ForceDirectedRunner runner = new ForceDirectedRunner(g, cRep, cSpring, kL, screenWidth, screenHeight, circleDiameter);
-        while(!runner.isOptimized()){
-            runner.optimizeGraphPositions(0.005, 100000);
+        ConcurrentFileWriter concurrentFileWriter;
+        try {
+            concurrentFileWriter = new ConcurrentFileWriter("largeTest.txt");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
+
+        concurrentFileWriter.start();
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+
+        ConcurrentGraphProcessor[] jobs = new ConcurrentGraphProcessor[10000];
+        for(int i = 0; i < jobs.length; i++){
+            jobs[i] = new ConcurrentGraphProcessor(adjMat, concurrentFileWriter, screenWidth, screenHeight);
+        }
+
+        for(int i = 0; i < jobs.length; i++){
+            pool.execute(jobs[i]);
+        }
+
+        pool.shutdown();
+
 
 //        JFrame frame = new JFrame("Graph Visualizer");
 //        frame.add(new GraphVisualizer((g)));
