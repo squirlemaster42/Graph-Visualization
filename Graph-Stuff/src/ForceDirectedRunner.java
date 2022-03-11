@@ -30,7 +30,7 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
     }
 
     public double coolingFunction(double t) {
-        return 1.0;
+        return Math.min(1.0, 10.0/t);
     }
 
     private double maxForceChange = Integer.MAX_VALUE;
@@ -84,6 +84,7 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
 
             Vector cooledF = new Vector(f.getxMag() * coolingFunction(iters), f.getyMag() * coolingFunction(iters));
             Vector constrainedVector = constrainVector(n.getX(), n.getY(), cooledF);
+            forceMap.put(n, constrainedVector);
             n.setXY(n.getX() + constrainedVector.getxMag(), n.getY() + constrainedVector.getyMag());
         }
 
@@ -95,11 +96,7 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
             }
         }
         maxForceChange = max;
-//        try {
-//            Thread.sleep(delay);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+//        System.out.printf("Iters: %d - Cooling Function: %f - MaxChange: %f\n", iters, coolingFunction(iters), maxForceChange);
     }
 
     private Vector attractiveForce(double x1, double y1, double x2, double y2) {

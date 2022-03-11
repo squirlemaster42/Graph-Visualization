@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,40 +16,41 @@ public class Main {
 
     public static void main(String[] args){
         //Used for random graph generation. Currently, broken
-        //RandomMatrixStringGenerator.MatrixBuilderPair randMatrix = RandomMatrixStringGenerator.generateRandomMatrixString();
-        //AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(randMatrix.matrix, randMatrix.size);
-
-        AdjMat adjMat = AdjMat.makeMatrixFromFile("adjMat.txt");
+        RandomMatrixStringGenerator.MatrixBuilderPair randMatrix = RandomMatrixStringGenerator.generateRandomMatrixString();
+        AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(randMatrix.matrix, randMatrix.size);
         UnweightedDirectedGraph g = adjMat.makeGraph();
-        ConcurrentFileWriter concurrentFileWriter;
-        try {
-            concurrentFileWriter = new ConcurrentFileWriter("largeTest" + System.nanoTime() + ".txt");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
 
-        concurrentFileWriter.start();
-        ExecutorService pool = Executors.newFixedThreadPool(10);
+//        AdjMat adjMat = AdjMat.makeMatrixFromFile("adjMat.txt");
+//        UnweightedDirectedGraph g = adjMat.makeGraph();
+//        ConcurrentFileWriter concurrentFileWriter;
+//        try {
+//            concurrentFileWriter = new ConcurrentFileWriter("largeTest" + System.nanoTime() + ".txt");
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        concurrentFileWriter.start();
+//        ExecutorService pool = Executors.newFixedThreadPool(10);
+//
+//        ConcurrentGraphProcessor[] jobs = new ConcurrentGraphProcessor[100000];
+//        for(int i = 0; i < jobs.length; i++){
+//            RandomMatrixStringGenerator.MatrixBuilderPair randMatrixPair = RandomMatrixStringGenerator.generateRandomMatrixString();
+//            AdjMat adj = AdjMat.makeMatrixFromStringArray(randMatrixPair.matrix, randMatrixPair.size);
+//            jobs[i] = new ConcurrentGraphProcessor(i, adj, concurrentFileWriter, screenWidth, screenHeight);
+//        }
+//
+//        for(int i = 0; i < jobs.length; i++){
+//            pool.execute(jobs[i]);
+//        }
+//
+//        pool.shutdown();
+//        concurrentFileWriter.stop();
 
-        ConcurrentGraphProcessor[] jobs = new ConcurrentGraphProcessor[100000];
-        for(int i = 0; i < jobs.length; i++){
-            RandomMatrixStringGenerator.MatrixBuilderPair randMatrixPair = RandomMatrixStringGenerator.generateRandomMatrixString();
-            AdjMat adj = AdjMat.makeMatrixFromStringArray(randMatrixPair.matrix, randMatrixPair.size);
-            jobs[i] = new ConcurrentGraphProcessor(i, adj, concurrentFileWriter, screenWidth, screenHeight);
-        }
 
-        for(int i = 0; i < jobs.length; i++){
-            pool.execute(jobs[i]);
-        }
-
-        pool.shutdown();
-        concurrentFileWriter.stop();
-
-
-//        JFrame frame = new JFrame("Graph Visualizer");
-//        frame.add(new GraphVisualizer((g)));
-//        frame.setSize(GraphVisualizer.screenWidth + GraphVisualizer.overscaleWidth, GraphVisualizer.screenHeight + GraphVisualizer.overscaleHeight);
-//        frame.setVisible(true);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame frame = new JFrame("Graph Visualizer");
+        frame.add(new GraphVisualizer((g)));
+        frame.setSize(GraphVisualizer.screenWidth + GraphVisualizer.overscaleWidth, GraphVisualizer.screenHeight + GraphVisualizer.overscaleHeight);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

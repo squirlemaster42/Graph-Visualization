@@ -11,7 +11,7 @@ public class GraphVisualizer extends JPanel {
 
     public static final double cRep = 10000.0;
     public static final double cSpring = 15.0;
-    public static final double kL = 50.0;
+    public static final double kL = 100.0;
     public static final int overscaleWidth = 16;
     public static final int overscaleHeight = 39;
     public static final int screenWidth = 1000 - overscaleWidth;
@@ -19,7 +19,7 @@ public class GraphVisualizer extends JPanel {
     public static final int circleDiameter = 20;
     public static final int delay = 10;
     private final FileManager fileManager;
-    private final UnweightedDirectedGraph graph;
+    private UnweightedDirectedGraph graph;
     private int numRuns = 0;
     private GraphVisualizationRunner forceDirectedRunner;
 
@@ -49,7 +49,7 @@ public class GraphVisualizer extends JPanel {
     public void paintComponent(Graphics g) {
         drawGraph(g);
         if (!forceDirectedRunner.isOptimized()) {
-            forceDirectedRunner.optimizeGraphPositions(0.005, 100000);
+            forceDirectedRunner.optimizeGraphPositions(0.005, 10000);
         }else{
             int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
             System.out.println(numRuns + " - Done: " + intersections);
@@ -58,6 +58,9 @@ public class GraphVisualizer extends JPanel {
             numRuns++;
             fileManager.writeMessage(numRuns + " - ");
             fileManager.writeMessage("{");
+            RandomMatrixStringGenerator.MatrixBuilderPair randMatrix = RandomMatrixStringGenerator.generateRandomMatrixString();
+            AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(randMatrix.matrix, randMatrix.size);
+            graph = adjMat.makeGraph();
             int i = 0;
             for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()){
                 resetRandomPos(entry.getKey());
