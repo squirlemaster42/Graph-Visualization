@@ -36,18 +36,13 @@ public class AdjMat {
     }
 
     public static AdjMat makeMatrixFromStringArray(String[] matrix, int numRows){
-        for(String str : matrix){
-            System.out.println(str);
-        }
-
-        AdjMat returnMatrix = new AdjMat(numRows);
-        int row = 1;
-        for(int j = 0; j < numRows; j++){
-            String[] splitData = matrix[j].split(" ");
+        AdjMat returnMatrix = new AdjMat(numRows + 1);
+        for(int j = 1; j < numRows + 1; j++){
+            String[] splitData = matrix[j - 1].split(" ");
             for(int i = 0; i < splitData.length; i++){
                 if(splitData[i].equals("1")){
-                    returnMatrix.setEdge(row, i);
-                    returnMatrix.setEdge(i, row);
+                    returnMatrix.setEdge(j, i);
+                    returnMatrix.setEdge(i, j);
                 }
             }
         }

@@ -23,4 +23,15 @@ public class MatrixMathTest {
             System.out.println(eigenDecomposition.getEigenvector(i));
         }
     }
+
+    @Test
+    public void makeRandomAdjMatrixTest(){
+        RandomMatrixStringGenerator.MatrixBuilderPair randMatrixPair = RandomMatrixStringGenerator.generateRandomMatrixString();
+        for(int i = 0; i < randMatrixPair.size; i++){
+            System.out.println(randMatrixPair.matrix[i]);
+        }
+        AdjMat adjMat = AdjMat.makeMatrixFromStringArray(randMatrixPair.matrix, randMatrixPair.size);
+        System.out.println(adjMat);
+        UnweightedDirectedGraph graph = adjMat.makeGraph();
+    }
 }

@@ -2,12 +2,12 @@ import java.util.Random;
 
 public class RandomMatrixStringGenerator {
 
-    public static int kMaxSize = 50;
+    public static int kMaxSize = 100;
 
     //Generates a random adj matrix with a random size and random edges
     public static MatrixBuilderPair generateRandomMatrixString(){
         Random rand = new Random();
-        int matrixSize = rand.nextInt(kMaxSize);
+        int matrixSize = rand.nextInt(kMaxSize) + 5;
         String[] returnMatrix = new String[matrixSize];
 
         for(int i = 0; i < matrixSize; i++){

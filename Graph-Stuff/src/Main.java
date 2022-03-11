@@ -32,7 +32,9 @@ public class Main {
 
         ConcurrentGraphProcessor[] jobs = new ConcurrentGraphProcessor[10000];
         for(int i = 0; i < jobs.length; i++){
-            jobs[i] = new ConcurrentGraphProcessor(adjMat, concurrentFileWriter, screenWidth, screenHeight);
+            RandomMatrixStringGenerator.MatrixBuilderPair randMatrixPair = RandomMatrixStringGenerator.generateRandomMatrixString();
+            AdjMat adj = AdjMat.makeMatrixFromStringArray(randMatrixPair.matrix, randMatrixPair.size);
+            jobs[i] = new ConcurrentGraphProcessor(adj, concurrentFileWriter, screenWidth, screenHeight);
         }
 
         for(int i = 0; i < jobs.length; i++){
@@ -40,6 +42,7 @@ public class Main {
         }
 
         pool.shutdown();
+        concurrentFileWriter.stop();
 
 
 //        JFrame frame = new JFrame("Graph Visualizer");
