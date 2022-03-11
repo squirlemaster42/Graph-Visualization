@@ -22,7 +22,7 @@ public class Main {
         UnweightedDirectedGraph g = adjMat.makeGraph();
         ConcurrentFileWriter concurrentFileWriter;
         try {
-            concurrentFileWriter = new ConcurrentFileWriter("largeTest.txt");
+            concurrentFileWriter = new ConcurrentFileWriter("largeTest" + System.nanoTime() + ".txt");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -30,11 +30,11 @@ public class Main {
         concurrentFileWriter.start();
         ExecutorService pool = Executors.newFixedThreadPool(10);
 
-        ConcurrentGraphProcessor[] jobs = new ConcurrentGraphProcessor[10000];
+        ConcurrentGraphProcessor[] jobs = new ConcurrentGraphProcessor[100000];
         for(int i = 0; i < jobs.length; i++){
             RandomMatrixStringGenerator.MatrixBuilderPair randMatrixPair = RandomMatrixStringGenerator.generateRandomMatrixString();
             AdjMat adj = AdjMat.makeMatrixFromStringArray(randMatrixPair.matrix, randMatrixPair.size);
-            jobs[i] = new ConcurrentGraphProcessor(adj, concurrentFileWriter, screenWidth, screenHeight);
+            jobs[i] = new ConcurrentGraphProcessor(i, adj, concurrentFileWriter, screenWidth, screenHeight);
         }
 
         for(int i = 0; i < jobs.length; i++){

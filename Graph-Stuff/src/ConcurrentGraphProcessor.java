@@ -6,13 +6,15 @@ public class ConcurrentGraphProcessor implements Runnable{
     private final UnweightedDirectedGraph graph;
     private final ConcurrentFileWriter writer;
     private final int screenWidth, screenHeight;
+    private final int jobNumber;
     private String outputString;
 
-    public ConcurrentGraphProcessor(final AdjMat adjMat, final ConcurrentFileWriter writer, final int screenWidth, final int screenHeight){
+    public ConcurrentGraphProcessor(final int jobNumber, final AdjMat adjMat, final ConcurrentFileWriter writer, final int screenWidth, final int screenHeight){
         this.graph = adjMat.makeGraph();
         this.writer = writer;
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
+        this.jobNumber = jobNumber;
     }
 
     @Override
@@ -37,6 +39,7 @@ public class ConcurrentGraphProcessor implements Runnable{
         }
         int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
         outputString += " - " + intersections + "\n";
+        System.out.print(jobNumber + " - ");
         System.out.println(outputString);
         try {
             writer.queueMessage(outputString);
