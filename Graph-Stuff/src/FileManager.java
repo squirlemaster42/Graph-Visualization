@@ -13,4 +13,8 @@ public class FileManager {
         pw.write(message);
         pw.flush();
     }
+
+    public void close(){
+        pw.close();
+    }
 }

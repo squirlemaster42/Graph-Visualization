@@ -9,19 +9,20 @@ import java.util.Random;
 
 public class GraphVisualizer extends JPanel {
 
-    public static final double cRep = 10000.0;
-    public static final double cSpring = 15.0;
+    public static final double cRep = 30000.0;
+    public static final double cSpring = 12.0;
     public static final double kL = 100.0;
     public static final int overscaleWidth = 16;
     public static final int overscaleHeight = 39;
-    public static final int screenWidth = 1000 - overscaleWidth;
-    public static final int screenHeight = 800 - overscaleHeight;
+    public static final int screenWidth = 1800 - overscaleWidth;
+    public static final int screenHeight = 1200 - overscaleHeight;
     public static final int circleDiameter = 20;
     public static final int delay = 10;
     private final FileManager fileManager;
     private UnweightedDirectedGraph graph;
     private int numRuns = 0;
     private GraphVisualizationRunner forceDirectedRunner;
+    private RandomMatrixStringGenerator.MatrixBuilderPair matrixPair = null;
 
     public GraphVisualizer(UnweightedDirectedGraph graph) {
         this.graph = graph;
@@ -55,12 +56,25 @@ public class GraphVisualizer extends JPanel {
             System.out.println(numRuns + " - Done: " + intersections);
             fileManager.writeMessage(" - " + intersections + "\n");
 
+            if(this.matrixPair != null && intersections == 0){
+                try {
+                    FileManager badMatrixWriter = new FileManager(numRuns + "BadMatrix.txt");
+                    badMatrixWriter.writeMessage(this.matrixPair.size + "\n");
+                    for(String str : this.matrixPair.matrix){
+                        badMatrixWriter.writeMessage(str + "\n");
+                    }
+                    badMatrixWriter.close();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             numRuns++;
             fileManager.writeMessage(numRuns + " - ");
             fileManager.writeMessage("{");
-            RandomMatrixStringGenerator.MatrixBuilderPair randMatrix = RandomMatrixStringGenerator.generateRandomMatrixString();
-            AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(randMatrix.matrix, randMatrix.size);
-            graph = adjMat.makeGraph();
+//            this.matrixPair = RandomMatrixStringGenerator.generateRandomMatrixString();
+//            AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(this.matrixPair.matrix, this.matrixPair.size);
+//            graph = adjMat.makeGraph();
             int i = 0;
             for (Map.Entry<String, UnweightedDirectedGraph.Node> entry : graph.getVertices().entrySet()){
                 resetRandomPos(entry.getKey());

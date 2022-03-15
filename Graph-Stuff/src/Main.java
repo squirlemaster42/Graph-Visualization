@@ -16,12 +16,12 @@ public class Main {
 
     public static void main(String[] args){
         //Used for random graph generation. Currently, broken
-        RandomMatrixStringGenerator.MatrixBuilderPair randMatrix = RandomMatrixStringGenerator.generateRandomMatrixString();
-        AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(randMatrix.matrix, randMatrix.size);
-        UnweightedDirectedGraph g = adjMat.makeGraph();
-
-//        AdjMat adjMat = AdjMat.makeMatrixFromFile("adjMat.txt");
+//        RandomMatrixStringGenerator.MatrixBuilderPair randMatrix = RandomMatrixStringGenerator.generateRandomMatrixString();
+//        AdjMat adjMat =  AdjMat.makeMatrixFromStringArray(randMatrix.matrix, randMatrix.size);
 //        UnweightedDirectedGraph g = adjMat.makeGraph();
+
+        AdjMat adjMat = AdjMat.makeMatrixFromFile("12BadMatrix.txt");
+        UnweightedDirectedGraph g = adjMat.makeGraph();
 //        ConcurrentFileWriter concurrentFileWriter;
 //        try {
 //            concurrentFileWriter = new ConcurrentFileWriter("largeTest" + System.nanoTime() + ".txt");
@@ -39,8 +39,8 @@ public class Main {
 //            jobs[i] = new ConcurrentGraphProcessor(i, adj, concurrentFileWriter, screenWidth, screenHeight);
 //        }
 //
-//        for(int i = 0; i < jobs.length; i++){
-//            pool.execute(jobs[i]);
+//        for (ConcurrentGraphProcessor job : jobs) {
+//            pool.execute(job);
 //        }
 //
 //        pool.shutdown();

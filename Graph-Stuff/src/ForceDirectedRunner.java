@@ -53,6 +53,7 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
             List<Vector> springList = new ArrayList<>();
 
             Set<UnweightedDirectedGraph.Node> adj = new HashSet<>();
+//            System.out.printf("%s - {%f, %f}\n", n.getName(), n.getX(), n.getY());
             for (UnweightedDirectedGraph.Node e : n.getEdges()) {
                 springList.add(attractiveForce(n.getX(), n.getY(), e.getX(), e.getY()));
                 adj.add(e);
@@ -82,11 +83,13 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
             UnweightedDirectedGraph.Node n = entry.getValue();
             Vector f = forceMap.get(n);
 
+//            System.out.printf("{%f, %f}, ", f.getxMag(), f.getyMag());
             Vector cooledF = new Vector(f.getxMag() * coolingFunction(iters), f.getyMag() * coolingFunction(iters));
             Vector constrainedVector = constrainVector(n.getX(), n.getY(), cooledF);
             forceMap.put(n, constrainedVector);
             n.setXY(n.getX() + constrainedVector.getxMag(), n.getY() + constrainedVector.getyMag());
         }
+//        System.out.println();
 
         iters++;
         double max = 0;
@@ -145,7 +148,8 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
                 constrainedX = (screenWidth - circleDiameter) - x;
             }
         }else if(summedX < 0){ //Left of the screen
-            constrainedX = -x;
+//            constrainedX = -x;
+            constrainedX = v.getxMag();
         }else{
             constrainedX = v.getxMag();
         }
@@ -160,7 +164,8 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
                 constrainedY = (screenHeight - circleDiameter) - y ;
             }
         }else if(summedY < 0){ //Top of the screen
-            constrainedY = -y;
+//            constrainedY = -y;
+            constrainedY = v.getyMag();
         }else{
             constrainedY = v.getyMag();
         }
@@ -173,5 +178,9 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
 
     public boolean isOptimized() {
         return optimized;
+    }
+
+    public GraphFunctions.Point mapToScreen(final double x, final double y, final int screenWidth, final int screenHeight){
+        return new GraphFunctions.Point(x % screenWidth, y  % screenHeight);
     }
 }
