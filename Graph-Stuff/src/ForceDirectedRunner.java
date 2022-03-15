@@ -180,7 +180,7 @@ public class ForceDirectedRunner extends GraphVisualizationRunner{
         return optimized;
     }
 
-    public GraphFunctions.Point mapToScreen(final double x, final double y, final int screenWidth, final int screenHeight){
-        return new GraphFunctions.Point(x % screenWidth, y  % screenHeight);
+    public Utils.Point mapToScreen(final double x, final double y, final int screenWidth, final int screenHeight){
+        return new Utils.Point(x % screenWidth, y  % screenHeight);
     }
 }

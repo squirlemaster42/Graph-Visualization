@@ -37,7 +37,7 @@ public class ConcurrentGraphProcessor implements Runnable{
         while (!forceDirectedRunner.isOptimized()){
             forceDirectedRunner.optimizeGraphPositions(0.005, 100000);
         }
-        int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
+        int intersections = Utils.computeNumEdgeIntersections(graph);
         outputString += " - " + intersections + "\n";
         System.out.print(jobNumber + " - ");
         System.out.println(outputString);

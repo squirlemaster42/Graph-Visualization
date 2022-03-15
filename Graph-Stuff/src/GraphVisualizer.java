@@ -52,7 +52,7 @@ public class GraphVisualizer extends JPanel {
         if (!forceDirectedRunner.isOptimized()) {
             forceDirectedRunner.optimizeGraphPositions(0.005, 10000);
         }else{
-            int intersections = GraphFunctions.computeNumEdgeIntersections(graph);
+            int intersections = Utils.computeNumEdgeIntersections(graph);
             System.out.println(numRuns + " - Done: " + intersections);
             fileManager.writeMessage(" - " + intersections + "\n");
 

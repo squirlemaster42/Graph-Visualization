@@ -1,8 +1,17 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class GraphFunctions {
+public class Utils {
 
+    public static int generateConstrainedRandomInt(final Random rand, final int max){
+        return Math.min(rand.nextInt(max), max);
+    }
+
+    public static boolean inBounds(final Rectangle bounds, final Point point){
+        return false;
+    }
     public static int computeNumEdgeIntersections(UnweightedDirectedGraph g) {
         final List<LineSegment> equations = new ArrayList<>();
         for (String s : g.getEdges()) {
